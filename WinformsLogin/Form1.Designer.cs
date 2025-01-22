@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             panel1 = new Panel();
-            CloseApp = new Label();
+            CloseAppButton = new Label();
             panel2 = new Panel();
             Авторизация = new Label();
             panel3 = new Panel();
@@ -49,26 +49,31 @@
             // panel1
             // 
             panel1.BackColor = SystemColors.Control;
-            panel1.Controls.Add(CloseApp);
+            panel1.Controls.Add(CloseAppButton);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(406, 31);
             panel1.TabIndex = 1;
             panel1.Paint += panel1_Paint;
+            panel1.MouseDown += panel1_MouseDown;
+            panel1.MouseMove += panel1_MouseMove;
+            panel1.MouseUp += panel1_MouseUp;
             // 
-            // CloseApp
+            // CloseAppButton
             // 
-            CloseApp.AutoSize = true;
-            CloseApp.Cursor = Cursors.Hand;
-            CloseApp.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            CloseApp.Location = new Point(383, 7);
-            CloseApp.Name = "CloseApp";
-            CloseApp.Size = new Size(20, 21);
-            CloseApp.TabIndex = 0;
-            CloseApp.Text = "X";
-            CloseApp.TextAlign = ContentAlignment.TopRight;
-            CloseApp.Click += label1_Click;
+            CloseAppButton.AutoSize = true;
+            CloseAppButton.Cursor = Cursors.Hand;
+            CloseAppButton.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            CloseAppButton.Location = new Point(383, 7);
+            CloseAppButton.Name = "CloseAppButton";
+            CloseAppButton.Size = new Size(20, 21);
+            CloseAppButton.TabIndex = 0;
+            CloseAppButton.Text = "X";
+            CloseAppButton.TextAlign = ContentAlignment.TopRight;
+            CloseAppButton.Click += CloseAppButton_Click;
+            CloseAppButton.MouseEnter += CloseAppButton_MouseEnter;
+            CloseAppButton.MouseLeave += CloseAppButton_MouseLeave;
             // 
             // panel2
             // 
@@ -190,7 +195,7 @@
         private Panel panel2;
         private Label Авторизация;
         private Panel panel3;
-        private Label CloseApp;
+        private Label CloseAppButton;
         private PictureBox pictureBox1;
         private TextBox passwordFiels;
         private PictureBox pictureBox2;
