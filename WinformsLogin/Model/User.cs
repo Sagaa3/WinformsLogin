@@ -11,6 +11,13 @@ namespace WinformsLogin.Model
         public int UserId { get; set; }
         public string Name { get; set; }
 
-        public Password Password { get; set; }
+        public string Password { get; set; }
+
+        public User() { }
+        public User(string name, string pass)
+        {
+            Name = name;
+            Password = pass;
+        }
     }
 }

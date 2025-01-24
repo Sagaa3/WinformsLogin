@@ -1,3 +1,9 @@
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.VisualBasic.ApplicationServices;
+using Npgsql;
+using WinformsLogin.Model;
+using User = WinformsLogin.Model.User;
+
 namespace WinformsLogin
 {
     public partial class LoginForm : Form
@@ -75,6 +81,39 @@ namespace WinformsLogin
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
             dragging = false;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string loginUser = loginField.Text;
+            string passUser = passwordFiels.Text;
+
+            using (var contex = new contex())
+            {
+                User user = new User(loginUser, passUser);
+
+                contex.Users.Add(user);
+                contex.SaveChanges();
+
+                string connection = "host=localhost; port=5432; database=winformdb; user id=postgres; password=root";
+                string query = "SELECT * FROM Users WHERE Name = @Name";
+
+                using (var command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("username", userNameToCheck);
+
+                    var count = (long)command.ExecuteScalar();
+
+                    if (count > 0)
+                    {
+                        Console.WriteLine($"ѕользователь {userNameToCheck} существует в базе данных.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"ѕользователь {userNameToCheck} не найден в базе данных.");
+                    }
+
+                }
         }
     }
 }
