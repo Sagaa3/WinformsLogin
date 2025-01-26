@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.VisualBasic.ApplicationServices;
 using Npgsql;
+using System.Web;
+using System.Windows.Forms;
 using WinformsLogin.Model;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 using User = WinformsLogin.Model.User;
 
 namespace WinformsLogin
@@ -88,32 +92,46 @@ namespace WinformsLogin
             string loginUser = loginField.Text;
             string passUser = passwordFiels.Text;
 
+            string connection = "host=localhost; port=5432; database=winformdb; user id=postgres; password=root";
+            string query = "SELECT * FROM public.\"Users\" ";
+            List<string> UserList = new List<string>();
+
             using (var contex = new contex())
             {
                 User user = new User(loginUser, passUser);
 
-                contex.Users.Add(user);
-                contex.SaveChanges();
+                //contex.Users.Add(user);
+                //contex.SaveChanges();
 
-                string connection = "host=localhost; port=5432; database=winformdb; user id=postgres; password=root";
-                string query = "SELECT * FROM Users WHERE Name = @Name";
 
-                using (var command = new NpgsqlCommand(query, connection))
+                using (var connect = new NpgsqlConnection(connection))
                 {
-                    command.Parameters.AddWithValue("username", userNameToCheck);
+                    connect.Open();
 
-                    var count = (long)command.ExecuteScalar();
+                    string sql = "SELECT * FROM information_schema.tables WHERE table_name = 'users'";
+                    using (var command = new NpgsqlCommand(sql, connect))
+                    {
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var text = reader.GetString(0);
+                                MessageBox.Show(text);
+                                // Добавляем имя в список
+                                //UserList.Add(reader.GetString(0));
+                            }
+                        }
 
-                    if (count > 0)
-                    {
-                        Console.WriteLine($"Пользователь {userNameToCheck} существует в базе данных.");
                     }
-                    else
+                    string info = " ";
+                    foreach (var name in UserList)
                     {
-                        Console.WriteLine($"Пользователь {userNameToCheck} не найден в базе данных.");
+                        info += name;
                     }
+                    MessageBox.Show(info);
 
                 }
+            }
         }
     }
 }
