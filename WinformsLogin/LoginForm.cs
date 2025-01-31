@@ -92,45 +92,30 @@ namespace WinformsLogin
             string loginUser = loginField.Text;
             string passUser = passwordFiels.Text;
 
-            string connection = "host=localhost; port=5432; database=winformdb; user id=postgres; password=root";
-            string query = "SELECT * FROM public.\"Users\" ";
-            List<string> UserList = new List<string>();
+            string connectionString = "host=localhost; port=5432; database=winformdb; user id=postgres; password=root";
+            //string query = String.Format("SELECT COUNT(*) FROM public.\"Users\" WHERE \"Name\" = {0}", loginUser);
+            string query = "SELECT COUNT(*) FROM public.\"Users\" WHERE \"Name\" = @username";
 
-            using (var contex = new contex())
+            using (var connect = new NpgsqlConnection(connectionString))
             {
-                User user = new User(loginUser, passUser);
-
-                //contex.Users.Add(user);
-                //contex.SaveChanges();
-
-
-                using (var connect = new NpgsqlConnection(connection))
+                connect.Open(); 
+                using (var command = new NpgsqlCommand(query,connect))
                 {
-                    connect.Open();
+                    command.Parameters.AddWithValue("username", loginUser);
+                    int userCount = Convert.ToInt32(command.ExecuteScalar());
 
-                    string sql = "SELECT * FROM information_schema.tables WHERE table_name = 'users'";
-                    using (var command = new NpgsqlCommand(sql, connect))
+                    if (userCount > 0)
                     {
-                        using (var reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                var text = reader.GetString(0);
-                                MessageBox.Show(text);
-                                // ƒобавл€ем им€ в список
-                                //UserList.Add(reader.GetString(0));
-                            }
-                        }
-
+                        MessageBox.Show("ѕользователь с таким именем уже существует. –егистраци€ невозможна.");
                     }
-                    string info = " ";
-                    foreach (var name in UserList)
+                    else
                     {
-                        info += name;
+                        // «десь можно добавить логику дл€ регистрации нового пользовател€
+                        MessageBox.Show("ѕользователь с таким именем не найден. ћожно зарегистрироватьс€.");
                     }
-                    MessageBox.Show(info);
-
                 }
+                
+                connect.Close();
             }
         }
     }
