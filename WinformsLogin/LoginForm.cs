@@ -61,30 +61,24 @@ namespace WinformsLogin
             CloseAppButton.ForeColor = Color.Black;
         }
 
-        private bool dragging = false;
         Point lastPoint;
         private void panel1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (dragging)
+            if (e.Button == MouseButtons.Left)
             {
-                Point newLocation = this.Location;
-                newLocation.X = e.X;
-                newLocation.Y = e.Y;
+                this.Left += e.X - lastPoint.X;
+                this.Top += e.Y - lastPoint.Y;
             }
         }
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                dragging = true;
-                lastPoint = new Point(e.X, e.Y);
-            }
+            lastPoint = new Point(e.X, e.Y);
         }
 
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
-            dragging = false;
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -98,8 +92,8 @@ namespace WinformsLogin
 
             using (var connect = new NpgsqlConnection(connectionString))
             {
-                connect.Open(); 
-                using (var command = new NpgsqlCommand(query,connect))
+                connect.Open();
+                using (var command = new NpgsqlCommand(query, connect))
                 {
                     command.Parameters.AddWithValue("username", loginUser);
                     int userCount = Convert.ToInt32(command.ExecuteScalar());
@@ -114,9 +108,14 @@ namespace WinformsLogin
                         MessageBox.Show("Пользователь с таким именем не найден. Можно зарегистрироваться.");
                     }
                 }
-                
+
                 connect.Close();
             }
+        }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
